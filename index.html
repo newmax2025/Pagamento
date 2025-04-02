@@ -22,7 +22,7 @@
     max-width: 150px;
     animation: fadeZoom 1s ease-in-out;
     width: 300%;
-    margin-bottom: 20px;1
+    margin-bottom: 20px;
 }
 
 
@@ -155,6 +155,28 @@ p {
     </style>
     <script>
         const token = "108|MqJWTU0DWwIuviMGnIUKyPBvyWyfhggAEngx5hqT6611b86d";
+
+        async function carregarPessoaAleatoria() {
+                try {
+                    const response = await fetch('pessoas.json'); // Carrega o JSON
+                    const data = await response.json(); // Converte para objeto JavaScript
+
+                    if (data.pessoa && Array.isArray(data.pessoa) && data.pessoa.length > 0) {
+                        const pessoaAleatoria = data.pessoa[Math.floor(Math.random() * data.pessoa.length)];
+
+                        document.getElementById("dep_nome").value = pessoaAleatoria.nome;
+                        document.getElementById("dep_cpf").value = pessoaAleatoria.cpf;
+                    } else {
+                        console.error("Nenhuma pessoa encontrada no JSON.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar o JSON:", error);
+                }
+            }
+
+            // Chamar a função ao carregar a página
+            window.onload = carregarPessoaAleatoria;
+
         
         async function depositar() {
             const data = {
@@ -185,9 +207,9 @@ p {
             if (result.qr_code) {
                 const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(result.qr_code)}`;
                 output += `<div class='qr-container'><img src='${qrImageUrl}' alt='QR Code'><br>
-                           <strong>Código PIX:</strong> <input type='text' id='qr_code_text' value='${result.qr_code}' readonly> 
-                           <button onclick='copiarCodigo()'>Copiar</button>
-                           <div id='timer'></div></div>`;
+                            <strong>Código PIX:</strong> <input type='text' id='qr_code_text' value='${result.qr_code}' readonly> 
+                            <button onclick='copiarCodigo()'>Copiar</button>
+                            <div id='timer'></div></div>`;
                 document.getElementById("dep_result").innerHTML = output;
                 iniciarContador();
             } else {
