@@ -7,24 +7,45 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #000000;
             text-align: center;
             padding: 20px;
+            color: white;
         }
+
+        .logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.logo {
+    max-width: 150px;
+    animation: fadeZoom 1s ease-in-out;
+    width: 300%;
+    margin-bottom: 20px;1
+}
+
+
         .container {
-            background: white;
+            background:#000d1e;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow:0 0 10px rgba(42, 242, 20, 0.5);
             max-width: 400px;
             margin: auto;
-        }
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+}
+            
+        
         input, select, button {
             width: 100%;
             padding: 10px;
             margin: 5px 0;
-            border: 1px solid #ccc;
             border-radius: 5px;
+            align-items: center;
         }
         button {
             background-color: #28a745;
@@ -44,10 +65,97 @@
             color: red;
             margin-top: 10px;
         }
+
+        h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    color: white;
+}
+
+@keyframes fadeZoom {
+    0% { opacity: 0; transform: scale(0.5); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.checkmark {
+    font-size: 50px;
+    color: #00ff1a;
+    margin-bottom: 20px;
+    animation: pop 0.5s ease-in-out;
+}
+
+@keyframes pop {
+    0% { transform: scale(0); }
+    80% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.whatsapp-button {
+    background: #25D366;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    display: inline-block;
+    animation: pulse 1.5s infinite;
+}
+
+.whatsapp-button:hover {
+    background: #1ebe5d;
+    transform: scale(1.05);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px #25D366; }
+    50% { box-shadow: 0 0 20px #25D366; }
+    100% { box-shadow: 0 0 10px #25D366; }
+}
+
+@keyframes glitch {
+    0% { transform: skew(0deg); }
+    20% { transform: skew(-5deg); filter: hue-rotate(10deg); }
+    40% { transform: skew(5deg); filter: hue-rotate(-10deg); }
+    60% { transform: skew(-5deg); filter: hue-rotate(10deg); }
+    80% { transform: skew(5deg); filter: hue-rotate(-10deg); }
+    100% { transform: skew(0deg); }
+}
+
+@keyframes neonGlow {
+    0% { filter: drop-shadow(0 0 5px #00ffea); }
+    50% { filter: drop-shadow(0 0 15px #00ffea); }
+    100% { filter: drop-shadow(0 0 5px #00ffea); }
+}
+
+.logo {
+    animation: neonGlow 1.5s infinite alternate ease-in-out, glitch 0.5s infinite steps(5, end);
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
     </style>
     <script>
         const token = "108|MqJWTU0DWwIuviMGnIUKyPBvyWyfhggAEngx5hqT6611b86d";
-
+        
         async function depositar() {
             const data = {
                 name: document.getElementById("dep_nome").value,
@@ -116,10 +224,11 @@
 </head>
 <body>
     <div class="container">
-        <h2>Depósito</h2>
-        <label>Nome: <input type="text" id="dep_nome"></label>
-        <label>CPF: <input type="text" id="dep_cpf"></label>
+        <img src="img/New Max Buscas.png" alt="Logo do Cliente" class="logo">
+        <input type="Nome" id="dep_nome" placeholder="Nome" required>
+        <input type="CPF" id="dep_cpf" placeholder="CPF" required>
         <label>Selecione seu plano:
+            
             <select id="dep_valor">
                 <option value="120">Plano Simples: R$120,00</option>
                 <option value="200">Plano Básico: R$200,00</option>
