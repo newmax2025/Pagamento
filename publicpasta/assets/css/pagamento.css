@@ -268,3 +268,40 @@ button:disabled {
     0% { box-shadow: 0 0 10px #00ffea; }
     100% { box-shadow: 0 0 20px #00ff1a; }
 }
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+    color: #ffffff;
+}
+.form-group label {
+    display: block;
+    font-weight: bold;
+}
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #1aff00;
+    border-radius: 5px;
+}
+.plan {
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+    color: #ffffff;
+}
