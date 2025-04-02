@@ -112,6 +112,7 @@ async function handleRegistration(event) {
 async function carregarPessoaAleatoria() {
   try {
     // Confirme se este caminho está correto para sua estrutura
+    
     const response = await fetch("../assets/json/pessoas.json"); // ou '../json/pessoas.json' ou 'pessoas.json'
     if (!response.ok) {
       throw new Error(
