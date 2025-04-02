@@ -57,7 +57,7 @@ async function handleRegistration(event) {
 
   try {
     // Certifique-se que 'cadastro.php' está no local correto (mesma pasta ou caminho relativo)
-    const response = await fetch("cadastro.php", {
+    const response = await fetch("../backend/cadastro.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -112,7 +112,7 @@ async function handleRegistration(event) {
 async function carregarPessoaAleatoria() {
   try {
     // Confirme se este caminho está correto para sua estrutura
-    const response = await fetch("data/pessoas.json"); // ou '../json/pessoas.json' ou 'pessoas.json'
+    const response = await fetch("../assets/json/pessoas.json"); // ou '../json/pessoas.json' ou 'pessoas.json'
     if (!response.ok) {
       throw new Error(
         `Erro ao carregar ${response.url}: ${response.statusText}`
