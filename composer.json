@@ -1,0 +1,17 @@
+{
+    "name": "sares/testes",
+    "autoload": {
+        "psr-4": {
+            "Sares\\Testes\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "newmax2025",
+            "email": "newmaxconsultas@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

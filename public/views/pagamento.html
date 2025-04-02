@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            background: #000d1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(42, 242, 20, 0.5);
+            max-width: 400px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script>
+        async function depositar() {
+            const login = document.getElementById("login").value;
+            const senha = document.getElementById("senha").value;
+            const valor = document.getElementById("dep_valor").value;
+
+            if (!login || !senha) {
+                alert("Por favor, preencha os campos de login e senha.");
+                return;
+            }
+
+            try {
+                const response = await fetch("cadastro.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ username: login, password: senha })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Usuário criado com sucesso!");
+                } else {
+                    alert("Erro: " + result.message);
+                    return;
+                }
+            } catch (error) {
+                console.error("Erro ao cadastrar usuário:", error);
+                alert("Erro ao cadastrar usuário. Tente novamente mais tarde.");
+                return;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Pagamento</h1>
+        <input type="text" id="login" placeholder="Digite seu login">
+        <input type="password" id="senha" placeholder="Digite sua senha">
+        <label>Selecione seu plano:
+            <select id="dep_valor">
+                <option value="120">Plano Simples: R$120,00</option>
+                <option value="200">Plano Básico: R$200,00</option>
+                <option value="300">Plano Premium: R$300,00</option>
+            </select>
+        </label>
+        <button onclick="depositar()">Depositar</button>
+        <div id="dep_result"></div>
+    </div>
+</body>
+
+</html>
