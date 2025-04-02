@@ -7,9 +7,14 @@ body {
     margin: 0;
     /* Adicionado para remover margens padrão */
 }
-
+.logo {
+     display: block;
+    margin: 0 auto; /* Centraliza horizontalmente */
+    width: 150px; /* Ajuste conforme necessário */
+    height: auto;
+}
 .container {
-    background: #000d1e;
+   background-color: #00ff1a;
     padding: 30px;
     /* Aumentado um pouco o padding */
     border-radius: 10px;
@@ -68,7 +73,7 @@ button {
 }
 
 button:hover {
-    background-color: #218838;
+    background-color: #00ff37;
 }
 
 button:disabled {
@@ -194,7 +199,7 @@ button:disabled {
 
 .message-area.success {
     background-color: #d4edda;
-    color: #155724;
+    color: #00ff3c;
     border: 1px solid #c3e6cb;
     display: block;
     /* Mostra quando tem a classe */
@@ -211,4 +216,55 @@ button:disabled {
 /* Garante que o container de pagamento comece oculto (já definido inline, mas bom ter no CSS) */
 #paymentContainer {
     display: none;
+}
+
+@keyframes glitch {
+    0% { transform: skew(0deg); }
+    20% { transform: skew(-5deg); filter: hue-rotate(10deg); }
+    40% { transform: skew(5deg); filter: hue-rotate(-10deg); }
+    60% { transform: skew(-5deg); filter: hue-rotate(10deg); }
+    80% { transform: skew(5deg); filter: hue-rotate(-10deg); }
+    100% { transform: skew(0deg); }
+}
+
+@keyframes neonGlow {
+    0% { filter: drop-shadow(0 0 5px #00ffea); }
+    50% { filter: drop-shadow(0 0 15px #00ffea); }
+    100% { filter: drop-shadow(0 0 5px #00ffea); }
+}
+
+.logo {
+    animation: neonGlow 1.5s infinite alternate ease-in-out, glitch 0.5s infinite steps(5, end);
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
+
+.confirm-payment {
+    background: linear-gradient(90deg, #00ffea, #00ff1a);
+    color: black;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    width: 100%;
+    transition: 0.3s;
+    box-shadow: 0 0 10px #00ffea;
+    animation: glow 1.5s infinite alternate;
+    display: none; /* Oculto por padrão */
+}
+
+.confirm-payment:hover {
+    background: linear-gradient(90deg, #00ff1a, #00ffea);
+    box-shadow: 0 0 15px #00ffea;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 10px #00ffea; }
+    100% { box-shadow: 0 0 20px #00ff1a; }
 }
