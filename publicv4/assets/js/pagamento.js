@@ -180,6 +180,10 @@ async function depositar() {
 
     const result = await response.json();
     exibirResultado(result);
+
+    // Inicia a checagem de pagamento com 0 tentativas
+    checarPagamento(result.id, 0);
+
   } catch (error) {
     console.error("Erro ao processar depósito:", error);
     resultDiv.innerHTML = `<p style='color: red;'>Ocorreu um erro no depósito: ${error.message}</p>`;
@@ -278,6 +282,64 @@ function legacyCopy(inputElement, feedbackElement) {
   }
 }
 
+// Função para checar status do pagamento repetidamente
+async function checarPagamento(transacaoId, tentativas = 0) {
+  if (!transacaoId) {
+    console.error("ID da transação é inválido.");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `https://virtualpay.online/api/v1/transactions/${transacaoId}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sistemaBot}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Erro ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+
+    // Atualiza o status na interface
+    if (result.status) {
+      resultDiv.innerHTML = `<p><strong>Status do Pagamento:</strong> ${result.status}</p>`;
+
+      // Se o pagamento for confirmado, redireciona para a página de sucesso
+      if (result.status.toLowerCase() === "paid") {
+        resultDiv.innerHTML += `<p style='color: green;'><strong>Pagamento confirmado!</strong></p>`;
+
+        // Aguarda 2 segundos antes de redirecionar
+        setTimeout(() => {
+          window.location.href = "pagamento_confirmado.html";
+        }, 2000);
+        
+      } else {
+        // Se ainda não foi pago, tenta novamente em 5 segundos (até 12 vezes = 1 minuto)
+        if (tentativas < 12) {
+          setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 5000);
+        } else {
+          resultDiv.innerHTML += `<p style='color: red;'>Tempo limite para pagamento atingido. Recarregue a página.</p>`;
+        }
+      }
+    } else {
+      resultDiv.innerHTML = `<p style='color: red;'>Erro ao buscar status do pagamento.</p>`;
+    }
+  } catch (error) {
+    console.error("Erro ao verificar pagamento:", error);
+    resultDiv.innerHTML = `<p style='color: red;'>Erro ao verificar pagamento: ${error.message}</p>`;
+  }
+}
+
+
+
 // --- Inicialização e Event Listeners ---
 
 // Adiciona listener para o formulário de CADASTRO
@@ -294,6 +356,5 @@ if (depositButton) {
   console.error("Botão de depósito não encontrado no DOM.");
 }
 
-// Carrega a pessoa aleatória quando o script é executado (necessário para o pagamento depois)
-// Garanta que o caminho para 'pessoas.json' está correto aqui!
+// Carrega a pessoa aleatória quando o script é executado 
 carregarPessoaAleatoria();
