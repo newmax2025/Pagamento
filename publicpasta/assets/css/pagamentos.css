@@ -14,11 +14,11 @@ body {
     height: auto;
 }
 .container {
-   background-color: #00ff1a;
+   background-color:  #000d1e;
     padding: 30px;
     /* Aumentado um pouco o padding */
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(42, 242, 20, 0.6);
+    box-shadow: 0 0 15px rgba(26, 255, 0, 0.6);
     /* Sombra levemente ajustada */
     max-width: 400px;
     margin: 40px auto;
