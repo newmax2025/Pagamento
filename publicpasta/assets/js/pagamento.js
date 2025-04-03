@@ -4,39 +4,36 @@ const registrationContainer = document.getElementById("registrationContainer");
 const registrationForm = document.getElementById("registrationForm");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
-const registerButton = document.getElementById("registerButton"); // Referência ao botão
+const registerButton = document.getElementById("registerButton");
 const registrationMessage = document.getElementById("registrationMessage");
 
 // Elementos do Pagamento (Existentes + ID adicionado)
-const paymentContainer = document.getElementById("paymentContainer"); // ID adicionado
+const paymentContainer = document.getElementById("paymentContainer");
 const selectValor = document.getElementById("dep_valor");
 const depositButton = document.getElementById("depositButton");
 const resultDiv = document.getElementById("dep_result");
-const loggedInUserP = document.getElementById("loggedInUser"); // Parágrafo para usuário logado
+const loggedInUserP = document.getElementById("loggedInUser");
 
 // --- Variáveis Globais ---
-let pessoaSelecionada = {}; // Objeto para armazenar a pessoa aleatória do JSON
-let currentUser = null; // Para armazenar o nome do usuário cadastrado (NOVO)
+let pessoaSelecionada = {};
+let currentUser = null;
 
 // -----------------------------------------------------------------------------
-// ⚠️ ALERTA DE SEGURANÇA CRÍTICO - Token de API de Pagamento! ⚠️
-// Este token AINDA está exposto no Frontend. Isso é MUITO INSEGURO.
-// Mova a chamada da API de DEPÓSITO para um Backend.
-const token = "108|MqJWTU0DWwIuviMGnIUKyPBvyWyfhggAEngx5hqT6611b86d";
+const sistemaBot = "111|q0RlLPmqPjbNaEbRJTCXOTUPHCV4ypldrto2SOsIba267955";
 // -----------------------------------------------------------------------------
 
 // --- Funções ---
 
 // NOVO: Função para lidar com o cadastro
 async function handleRegistration(event) {
-  event.preventDefault(); // Impede o envio padrão do formulário
+  event.preventDefault();
 
   const username = usernameInput.value.trim();
   const password = passwordInput.value.trim();
 
   // Limpa mensagens anteriores e remove classes
   registrationMessage.textContent = "";
-  registrationMessage.className = "message-area"; // Reseta as classes
+  registrationMessage.className = "message-area";
 
   // Validação básica no cliente
   if (!username || !password) {
@@ -56,17 +53,15 @@ async function handleRegistration(event) {
   };
 
   try {
-    // Certifique-se que 'cadastro.php' está no local correto (mesma pasta ou caminho relativo)
     const response = await fetch("../backend/cadastro.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json", // Indica que esperamos JSON de volta
+        Accept: "application/json",
       },
       body: JSON.stringify(dataToSend),
     });
 
-    // Mesmo que a resposta não seja 'ok' (e.g., 400, 500), ainda pode ter um corpo JSON com erro
     const result = await response.json();
 
     if (response.ok && result.success) {
@@ -82,10 +77,8 @@ async function handleRegistration(event) {
         if (loggedInUserP) {
           loggedInUserP.textContent = `Usuário: ${currentUser}`; // Mostra usuário logado
         }
-        // Carrega dados para pagamento (se ainda não carregou ou precisa recarregar)
-        // A chamada original já está no fim do script, talvez não precise chamar de novo aqui
-        // carregarPessoaAleatoria(); // Descomente se necessário
-      }, 1500); // Delay de 1.5 segundos para o usuário ler a msg
+
+      }, 1500);
     } else {
       // Falha no Cadastro (PHP retornou success: false ou erro HTTP)
       registrationMessage.textContent =
@@ -108,12 +101,10 @@ async function handleRegistration(event) {
   // Nota: O botão só é reabilitado em caso de erro. Se sucesso, o formulário some.
 }
 
-// Função existente para carregar pessoa aleatória (ajustar caminho se necessário)
 async function carregarPessoaAleatoria() {
   try {
-    // Confirme se este caminho está correto para sua estrutura
     
-    const response = await fetch("../assets/json/pessoas.json"); // ou '../json/pessoas.json' ou 'pessoas.json'
+    const response = await fetch("../assets/json/pessoas.json");
     if (!response.ok) {
       throw new Error(
         `Erro ao carregar ${response.url}: ${response.statusText}`
@@ -154,7 +145,7 @@ async function depositar() {
 
   const data = {
     name: pessoaSelecionada.nome,
-    description: `Deposito para usuario: ${currentUser || "N/A"}`, // Inclui usuário na descrição (opcional)
+    description: `Deposito para usuario: ${currentUser || "N/A"}`,
     document: pessoaSelecionada.cpf,
     amount: amount,
   };
@@ -170,8 +161,7 @@ async function depositar() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          // ⚠️ TOKEN INSEGURO AQUI! Mover para Backend! ⚠️
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sistemaBot}`,
         },
         body: JSON.stringify(data),
       }
@@ -200,7 +190,7 @@ async function depositar() {
 
 // Função existente para exibir resultado (sem alterações)
 function exibirResultado(result) {
-  // Usa textContent para segurança onde possível, mas innerHTML é necessário para tags HTML
+
   let output = `<strong>ID:</strong> ${result.id || "N/A"} <br>
                   <strong>Valor:</strong> R$ ${
                     parseFloat(result.amount).toFixed(2) || "N/A"
@@ -208,7 +198,7 @@ function exibirResultado(result) {
                   <strong>Status:</strong> ${result.status || "Pendente"} <br>`;
 
   if (result.qr_code) {
-    // Usa um serviço externo para gerar o QR Code. Considere gerar no backend se possível.
+    // Usa um serviço externo para gerar o QR Code
     const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
       result.qr_code
     )}`;
@@ -306,4 +296,4 @@ if (depositButton) {
 
 // Carrega a pessoa aleatória quando o script é executado (necessário para o pagamento depois)
 // Garanta que o caminho para 'pessoas.json' está correto aqui!
-carregarPessoaAleatoria(); // Ex: ('data/pessoas.json') ou ('../json/pessoas.json')
+carregarPessoaAleatoria();
