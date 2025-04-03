@@ -11,7 +11,7 @@
         <img src="../assets/img/New Max Buscas.png" alt="Logo do Cliente" class="logo">
         <h1 style="color: green;">Pagamento Confirmado!</h1>
         <p>Seu pagamento foi processado com sucesso.</p>
-        <a href="index.html" class="btn">Voltar para o Início</a>
+        <a href="https://newmaxbuscas.pro" class="btn">Ir para o site Oficial</a>
     </div>
 </body>
 </html>

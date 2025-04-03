@@ -318,7 +318,8 @@ async function checarPagamento(transacaoId, tentativas = 0) {
 
         // Aguarda 2 segundos antes de redirecionar
         setTimeout(() => {
-          window.location.href = "pagamento_confirmado.html";
+          statusForm(); // Atualiza o status do usuário
+          window.location.href = "pagamento_confirmado.php";
         }, 2000);
         
       } else {
@@ -338,7 +339,25 @@ async function checarPagamento(transacaoId, tentativas = 0) {
   }
 }
 
+// Alterar Status do Usuário
+async function statusForm(){
+  const username = loggedInUserP;
+  const status = ativo;
+  mensagemStatus.textContent = "";
 
+  try {
+    const response = await fetch("../backend/alterar_status.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, status }),
+    });
+
+    const result = await response.json();
+
+  } catch (error) {
+    handleFetchError(error, mensagemStatus, "alteração de status");
+  }
+}
 
 // --- Inicialização e Event Listeners ---
 
