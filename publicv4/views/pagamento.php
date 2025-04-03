@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro e Pagamento</title>
-    <link rel="stylesheet" href="../assets/css/pagamentos.css?v=2.0">
-    
+
+    <link rel="stylesheet"
+        href="../assets/css/pagamentos.css?v=<?php echo md5_file('../assets/css/pagamentos.css'); ?>">
 </head>
 
 <body>
@@ -51,7 +52,7 @@
         <p id="loggedInUser" style="margin-top: 15px; font-size: 0.9em;"></p>
     </div>
 
-    <script src="script.js?v=2.1"></script>
+    <script src="../assets/js/pagamento.js?v=<?php echo md5_file('../assets/js/pagamento.js'); ?>"></script>
 </body>
 
 </html>
