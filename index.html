@@ -68,7 +68,7 @@
             messageArea.textContent = "Verificando...";
             messageArea.className = "message-loading";
 
-            fetch('publicpasta/backend/verificar_turnstile.php', {
+            fetch('publicv4/backend/verificar_turnstile.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ token })
