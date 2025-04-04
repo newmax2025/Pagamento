@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_GET['vendedor'])) {
+if (isset($_GET['v'])) {
     $_SESSION['vendedor_id'] = $_GET['v'];
 }
 ?>
