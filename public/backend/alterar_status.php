@@ -14,12 +14,30 @@ try {
     }
 
     // Verifica se os campos esperados foram recebidos
-    if (!isset($data["username"]) || !isset($data["status"])) {
+    if (!isset($data["username"]) || !isset($data["status"]) || !isset($data["amount"])) {
         throw new InvalidArgumentException("Campos 'username' e 'status' são obrigatórios.");
     }
 
     $username = trim($data["username"]);
     $status = trim($data["status"]);
+    $amount = $data["amount"] ?? null;
+    switch ((int)$amount) {
+    case "120":
+        $plano = "Básico";
+        break;
+    case "200":
+        $plano = "Intermediário";
+        break;
+    case "300":
+        $plano = "Premium";
+        break;
+    case "2520":
+        $plano = "Premium Anual";
+        break;
+    default:
+        $plano = "Desconhecido";
+        break;
+}
 
     // Validação básica
     if (empty($username) || empty($status)) {
@@ -42,14 +60,14 @@ try {
     $stmtCheck->close();
 
     // Atualiza o status do usuário
-    $sqlUpdate = "UPDATE clientes SET status = ? WHERE usuario = ?";
+    $sqlUpdate = "UPDATE clientes SET status = ?, plano = ? WHERE usuario = ?";
     $stmtUpdate = $conexao->prepare($sqlUpdate);
 
     if ($stmtUpdate === false) {
         throw new RuntimeException("Erro ao preparar a atualização: " . $conexao->error);
     }
 
-    $stmtUpdate->bind_param("ss", $status, $username);
+    $stmtUpdate->bind_param("sss", $status, $plano, $username);
 
     if ($stmtUpdate->execute()) {
         echo json_encode(["success" => true, "message" => "Status atualizado com sucesso!"]);

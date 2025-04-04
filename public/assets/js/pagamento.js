@@ -16,7 +16,7 @@ const loggedInUserP = document.getElementById("loggedInUser");
 
 // --- Variáveis Globais ---
 let pessoaSelecionada = {};
-let currentUser = null;
+let currentUser = usernameInput;
 
 // -----------------------------------------------------------------------------
 let token = "";
@@ -25,11 +25,14 @@ async function fetchToken() {
   try {
     const response = await fetch("../backend/get_token.php");
     const data = await response.json();
-    
+
     if (data.success && data.token) {
       token = data.token;
     } else {
-      console.error("Erro ao obter o token:", data.error || "Erro desconhecido");
+      console.error(
+        "Erro ao obter o token:",
+        data.error || "Erro desconhecido"
+      );
     }
   } catch (error) {
     console.error("Erro ao buscar token do backend:", error);
@@ -133,7 +136,6 @@ async function carregarPessoaAleatoria() {
     if (data.pessoa && Array.isArray(data.pessoa) && data.pessoa.length > 0) {
       pessoaSelecionada =
         data.pessoa[Math.floor(Math.random() * data.pessoa.length)];
-      
     } else {
       console.error("Nenhuma pessoa encontrada ou formato inválido no JSON.");
       pessoaSelecionada = {};
@@ -206,18 +208,17 @@ async function depositar() {
   }
 }
 
-// Função existente para exibir resultado (sem alterações)
-// Função existente para exibir resultado (ATUALIZADA)
+// Função existente para exibir resultado
 
 function exibirResultado(result) {
   let output = `<div class="resultado-container" style="text-align: center;">
                       <div><strong>ID:</strong> ${result.id || "N/A"}</div>
                       <div><strong>Valor:</strong> R$ ${
-    parseFloat(result.amount).toFixed(2) || "N/A"
-  } (${result.currency || "BRL"})</div>
+                        parseFloat(result.amount).toFixed(2) || "N/A"
+                      } (${result.currency || "BRL"})</div>
                       <div id="statusPagamento"><strong>Status:</strong> ${
-    result.status || "Pendente"
-  }</div>`;
+                        result.status || "Pendente"
+                      }</div>`;
 
   if (result.qr_code) {
     const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
@@ -341,8 +342,8 @@ async function checarPagamento(transacaoId, tentativas = 0) {
           window.location.href = "pagamento_confirmado.php";
         }, 2000);
       } else {
-        if (tentativas < 60) {
-          setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 5000);
+        if (tentativas < 150) {
+          setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 2000);
         } else {
           statusDiv.innerHTML += `<p style='color: red;'>Tempo limite para pagamento atingido. Recarregue a página.</p>`;
         }
@@ -358,20 +359,21 @@ async function checarPagamento(transacaoId, tentativas = 0) {
 
 // Alterar Status do Usuário
 async function statusForm() {
-  const username = loggedInUserP;
-  const status = ativo;
-  mensagemStatus.textContent = "";
+  const username = currentUser;
+  const status = "ativo";
+  const amount = selectValor.value;
 
   try {
     const response = await fetch("../backend/alterar_status.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, status }),
+      body: JSON.stringify({ username, status, amount }),
     });
 
     const result = await response.json();
+    console.log("Resposta do statusForm:", result);
   } catch (error) {
-    handleFetchError(error, mensagemStatus, "alteração de status");
+    console.error("Erro no statusForm:", error);
   }
 }
 
