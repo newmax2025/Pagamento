@@ -12,7 +12,7 @@ if (isset($_GET['v'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificando Acesso</title>
-    <link rel="stylesheet" href="../assets/css/index.css?v=<?php echo md5_file('../assets/css/index.css'); ?>"> 
+    <link rel="stylesheet" href="public/assets/css/index.css?v=<?php echo md5_file('public/assets/css/index.css'); ?>"> 
 </head>
 
 <body>
