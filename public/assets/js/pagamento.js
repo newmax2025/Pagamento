@@ -133,10 +133,7 @@ async function carregarPessoaAleatoria() {
     if (data.pessoa && Array.isArray(data.pessoa) && data.pessoa.length > 0) {
       pessoaSelecionada =
         data.pessoa[Math.floor(Math.random() * data.pessoa.length)];
-      console.log(
-        "Pessoa aleatória para depósito carregada:",
-        pessoaSelecionada.nome
-      );
+      
     } else {
       console.error("Nenhuma pessoa encontrada ou formato inválido no JSON.");
       pessoaSelecionada = {};
