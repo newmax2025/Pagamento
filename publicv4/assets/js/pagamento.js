@@ -20,7 +20,8 @@ let currentUser = null;
 
 
 // -----------------------------------------------------------------------------
-let sistemaBot = null;
+const sistemaBot = 111|q0RlLPmqPjbNaEbRJTCXOTUPHCV4ypldrto2SOsIba267955;
+let tokenB = null;
 
 async function buscarTokenDoBanco() {
   try {
