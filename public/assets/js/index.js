@@ -3,7 +3,7 @@ function onCaptchaSuccess(token) {
     messageArea.textContent = "Verificando...";
     messageArea.className = "message-loading";
 
-    fetch('public/backend/verificar_turnstile.php', {
+    fetch('../../backend/verificar_turnstile.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ token })
