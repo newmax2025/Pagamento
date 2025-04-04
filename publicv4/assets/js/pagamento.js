@@ -20,7 +20,7 @@ let currentUser = null;
 
 
 // -----------------------------------------------------------------------------
-let sistemaBot = null;
+let token = null;
 
 async function buscarTokenDoBanco() {
   try {
@@ -28,7 +28,7 @@ async function buscarTokenDoBanco() {
     const result = await response.json();
 
     if (result.success && result.token) {
-      sistemaBot = result.token;
+      token = result.token;
     } else {
       throw new Error(result.message || "Token não recebido.");
     }
@@ -37,7 +37,6 @@ async function buscarTokenDoBanco() {
     throw err;
   }
 }
-
 
 // -----------------------------------------------------------------------------
 
@@ -167,7 +166,7 @@ async function depositar() {
     // Busca o token dinamicamente
     await buscarTokenDoBanco();
 
-    if (!sistemaBot) {
+    if (!token) {
       throw new Error("Token da API não disponível.");
     }
 
@@ -188,7 +187,7 @@ async function depositar() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sistemaBot}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       }
@@ -215,7 +214,6 @@ async function depositar() {
     depositButton.disabled = false;
   }
 }
-
 
 
 // Função existente para exibir resultado (sem alterações)
