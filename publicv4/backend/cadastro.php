@@ -18,15 +18,16 @@ try {
     }
 
     // Verifica se os campos esperados existem
-    if (!isset($data["username"]) || !isset($data["password"])) {
+    if (!isset($data["username"]) || !isset($data["password"]) || !isset($data["vendedor_id"])) {
          throw new InvalidArgumentException("Campos 'username' e 'password' são obrigatórios.");
     }
 
     $user = trim($data["username"]);
     $pass = trim($data["password"]);
+    $vendedor_id = trim($data["vendedor_id"]);
 
     // Validação básica dos campos
-    if (empty($user) || empty($pass)) {
+    if (empty($user) || empty($pass) || empty($vendedor_id)) {
          // Note: Usamos echo/exit em vez de die para consistência
         echo json_encode(["success" => false, "message" => "Preencha todos os campos!"]);
         exit();
@@ -53,13 +54,13 @@ try {
     }
 
     // Insere no banco de dados
-    $sqlInsert = "INSERT INTO clientes (usuario, senha) VALUES (?, ?)";
+    $sqlInsert = "INSERT INTO clientes (usuario, senha, vendedor_id) VALUES (?, ?, ?)";
     $stmtInsert = $conexao->prepare($sqlInsert);
     // Verifica se a preparação foi bem-sucedida
      if ($stmtInsert === false) {
         throw new RuntimeException("Erro ao preparar a inserção no banco de dados: " . $conexao->error);
      }
-    $stmtInsert->bind_param("ss", $user, $hashed_password);
+    $stmtInsert->bind_param("sss", $user, $hashed_password, $vendedor_id);
 
     if ($stmtInsert->execute()) {
         echo json_encode(["success" => true, "message" => "Usuário cadastrado com sucesso!"]);
