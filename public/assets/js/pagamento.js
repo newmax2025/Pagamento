@@ -19,7 +19,26 @@ let pessoaSelecionada = {};
 let currentUser = null;
 
 // -----------------------------------------------------------------------------
-const sistemaBot = "111|q0RlLPmqPjbNaEbRJTCXOTUPHCV4ypldrto2SOsIba267955";
+let token = "";
+
+async function fetchToken() {
+  try {
+    const response = await fetch("../backend/get_token.php");
+    const data = await response.json();
+    
+    if (data.success && data.token) {
+      token = data.token;
+    } else {
+      console.error("Erro ao obter o token:", data.error || "Erro desconhecido");
+    }
+  } catch (error) {
+    console.error("Erro ao buscar token do backend:", error);
+  }
+}
+
+// Chamar fetchToken no início
+fetchToken();
+
 // -----------------------------------------------------------------------------
 
 // --- Funções ---
@@ -160,7 +179,7 @@ async function depositar() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sistemaBot}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       }
@@ -195,11 +214,11 @@ async function depositar() {
 
 function exibirResultado(result) {
   let output = `<div class="resultado-container" style="text-align: center;">
-                      <div><strong>ID:</strong> ${result.id || "N/A"}</div>
-                      <div><strong>Valor:</strong> R$ ${
+                      <div><strong>ID:</strong> ${result.id || "N/A"}</div>
+                      <div><strong>Valor:</strong> R$ ${
     parseFloat(result.amount).toFixed(2) || "N/A"
   } (${result.currency || "BRL"})</div>
-                      <div id="statusPagamento"><strong>Status:</strong> ${
+                      <div id="statusPagamento"><strong>Status:</strong> ${
     result.status || "Pendente"
   }</div>`;
 
@@ -208,15 +227,15 @@ function exibirResultado(result) {
       result.qr_code
     )}`;
     output += `
-                  <div class='qr-container' style="margin-top: 20px;">
-                    <p><strong>Escaneie ou copie o código PIX:</strong></p>
-                    <img src='${qrImageUrl}' alt='QR Code PIX' style="max-width: 100%; height: auto;">
-                    <br>
-                    <input type='text' id='qr_code_text' value='${result.qr_code}' readonly style="width: 90%; max-width: 400px; text-align: center; margin-top: 10px;">
-                    <br>
-                    <button id='copyButton' style="margin-top: 10px;">Copiar</button>
-                    <span id='copyFeedback' style='margin-left: 10px; color: green; display: none;'>Copiado!</span>
-                  </div>`;
+                  <div class='qr-container' style="margin-top: 20px;">
+                    <p><strong>Escaneie ou copie o código PIX:</strong></p>
+                    <img src='${qrImageUrl}' alt='QR Code PIX' style="max-width: 100%; height: auto;">
+                    <br>
+                    <input type='text' id='qr_code_text' value='${result.qr_code}' readonly style="width: 90%; max-width: 400px; text-align: center; margin-top: 10px;">
+                    <br>
+                    <button id='copyButton' style="margin-top: 10px;">Copiar</button>
+                    <span id='copyFeedback' style='margin-left: 10px; color: green; display: none;'>Copiado!</span>
+                  </div>`;
   } else {
     output += "<p style='color: orange;'>Código QR não disponível.</p>";
   }
@@ -302,7 +321,7 @@ async function checarPagamento(transacaoId, tentativas = 0) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sistemaBot}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
