@@ -29,7 +29,7 @@ async function buscarTokenDoBanco() {
     const result = await response.json();
 
     if (result.success && result.token) {
-      tokenB = result.token;
+      sistemaBot = result.token;
     } else {
       throw new Error(result.message || "Token não recebido.");
     }
