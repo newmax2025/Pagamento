@@ -18,7 +18,6 @@ const loggedInUserP = document.getElementById("loggedInUser");
 let pessoaSelecionada = {};
 let currentUser = null;
 
-
 // -----------------------------------------------------------------------------
 const sistemaBot = "111|q0RlLPmqPjbNaEbRJTCXOTUPHCV4ypldrto2SOsIba267955";
 // -----------------------------------------------------------------------------
@@ -51,7 +50,7 @@ async function handleRegistration(event) {
   const dataToSend = {
     username: username,
     password: password,
-    vendedor_id: vendedorId // ID do vendedor da URL
+    vendedor_id: vendedorId, // ID do vendedor da URL
   };
 
   try {
@@ -79,7 +78,6 @@ async function handleRegistration(event) {
         if (loggedInUserP) {
           loggedInUserP.textContent = `Usuário: ${currentUser}`; // Mostra usuário logado
         }
-
       }, 1500);
     } else {
       // Falha no Cadastro (PHP retornou success: false ou erro HTTP)
@@ -105,7 +103,6 @@ async function handleRegistration(event) {
 
 async function carregarPessoaAleatoria() {
   try {
-    
     const response = await fetch("../assets/json/pessoas.json");
     if (!response.ok) {
       throw new Error(
@@ -185,7 +182,6 @@ async function depositar() {
 
     // Inicia a checagem de pagamento com 0 tentativas
     checarPagamento(result.id, 0);
-
   } catch (error) {
     console.error("Erro ao processar depósito:", error);
     resultDiv.innerHTML = `<p style='color: red;'>Ocorreu um erro no depósito: ${error.message}</p>`;
@@ -198,33 +194,38 @@ async function depositar() {
 // Função existente para exibir resultado (ATUALIZADA)
 
 function exibirResultado(result) {
-    let output = `<strong>ID:</strong> ${result.id || "N/A"} <br>
-                 <strong>Valor:</strong> R$ ${parseFloat(result.amount).toFixed(2) || "N/A"} (${result.currency || "BRL"}) <br>
-                 <div id="statusPagamento"><strong>Status:</strong> ${result.status || "Pendente"}</div>`;
-  
-    if (result.qr_code) {
-      const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(result.qr_code)}`;
-      output += `<div class='qr-container'>
-                      <p><strong>Escaneie ou copie o código PIX:</strong></p>
-                      <img src='${qrImageUrl}' alt='QR Code PIX'>
-                      <br>
-                      <input type='text' id='qr_code_text' value='${result.qr_code}' readonly>
-                      <button id='copyButton'>Copiar</button>
-                      <span id='copyFeedback' style='margin-left: 10px; color: green; display: none;'>Copiado!</span>
-                  </div>`;
-    } else {
-      output += "<p style='color: orange;'>Código QR não disponível.</p>";
-    }
-  
-    resultDiv.innerHTML = output;
-  
-    const copyButton = document.getElementById("copyButton");
-    if (copyButton) {
-      copyButton.removeEventListener("click", copiarCodigo);
-      copyButton.addEventListener("click", copiarCodigo);
-    }
+  let output = `<strong>ID:</strong> ${result.id || "N/A"} <br>
+            <strong>Valor:</strong> R$ ${
+              parseFloat(result.amount).toFixed(2) || "N/A"
+            } (${result.currency || "BRL"}) <br>
+          <div id="statusPagamento"><strong>Status:</strong> ${
+            result.status || "Pendente"
+          }</div>`;
+
+  if (result.qr_code) {
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+      result.qr_code
+    )}`;
+    output += `<div class='qr-container'>
+                      <p><strong>Escaneie ou copie o código PIX:</strong></p>
+                      <img src='${qrImageUrl}' alt='QR Code PIX'>
+                      <br>
+                      <input type='text' id='qr_code_text' value='${result.qr_code}' readonly>
+                      <button id='copyButton'>Copiar</button>
+                      <span id='copyFeedback' style='margin-left: 10px; color: green; display: none;'>Copiado!</span>
+   </div>`;
+  } else {
+    output += "<p style='color: orange;'>Código QR não disponível.</p>";
   }
-  
+
+  resultDiv.innerHTML = output;
+
+  const copyButton = document.getElementById("copyButton");
+  if (copyButton) {
+    copyButton.removeEventListener("click", copiarCodigo);
+    copyButton.addEventListener("click", copiarCodigo);
+  }
+}
 
 // Função existente para copiar código (adaptada levemente para feedback)
 function copiarCodigo() {
@@ -284,60 +285,59 @@ function legacyCopy(inputElement, feedbackElement) {
 // Função para checar status do pagamento repetidamente (ATUALIZADA)
 
 async function checarPagamento(transacaoId, tentativas = 0) {
-    if (!transacaoId) {
-      console.error("ID da transação é inválido.");
-      return;
-    }
-  
-    try {
-      const response = await fetch(
-        `https://virtualpay.online/api/v1/transactions/${transacaoId}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${sistemaBot}`,
-          },
-        }
-      );
-  
-      if (!response.ok) {
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
-      }
-  
-      const result = await response.json();
-  
-      const statusDiv = document.getElementById("statusPagamento");
-  
-      if (statusDiv && result.status) {
-        statusDiv.innerHTML = `<strong>Status do Pagamento:</strong> ${result.status}`;
-  
-        if (result.status.toLowerCase() === "paid") {
-          statusDiv.innerHTML += `<p style='color: green;'><strong>Pagamento confirmado!</strong></p>`;
-          setTimeout(() => {
-            statusForm();
-            window.location.href = "pagamento_confirmado.php";
-          }, 2000);
-        } else {
-          if (tentativas < 12) {
-            setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 5000);
-          } else {
-            statusDiv.innerHTML += `<p style='color: red;'>Tempo limite para pagamento atingido. Recarregue a página.</p>`;
-          }
-        }
-      } else {
-        resultDiv.innerHTML += `<p style='color: red;'>Erro ao buscar status do pagamento.</p>`;
-      }
-    } catch (error) {
-      console.error("Erro ao verificar pagamento:", error);
-      resultDiv.innerHTML += `<p style='color: red;'>Erro ao verificar pagamento: ${error.message}</p>`;
-    }
+  if (!transacaoId) {
+    console.error("ID da transação é inválido.");
+    return;
   }
-  
+
+  try {
+    const response = await fetch(
+      `https://virtualpay.online/api/v1/transactions/${transacaoId}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sistemaBot}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Erro ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+
+    const statusDiv = document.getElementById("statusPagamento");
+
+    if (statusDiv && result.status) {
+      statusDiv.innerHTML = `<strong>Status do Pagamento:</strong> ${result.status}`;
+
+      if (result.status.toLowerCase() === "paid") {
+        statusDiv.innerHTML += `<p style='color: green;'><strong>Pagamento confirmado!</strong></p>`;
+        setTimeout(() => {
+          statusForm();
+          window.location.href = "pagamento_confirmado.php";
+        }, 2000);
+      } else {
+        if (tentativas < 12) {
+          setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 5000);
+        } else {
+          statusDiv.innerHTML += `<p style='color: red;'>Tempo limite para pagamento atingido. Recarregue a página.</p>`;
+        }
+      }
+    } else {
+      resultDiv.innerHTML += `<p style='color: red;'>Erro ao buscar status do pagamento.</p>`;
+    }
+  } catch (error) {
+    console.error("Erro ao verificar pagamento:", error);
+    resultDiv.innerHTML += `<p style='color: red;'>Erro ao verificar pagamento: ${error.message}</p>`;
+  }
+}
 
 // Alterar Status do Usuário
-async function statusForm(){
+async function statusForm() {
   const username = loggedInUserP;
   const status = ativo;
   mensagemStatus.textContent = "";
@@ -350,7 +350,6 @@ async function statusForm(){
     });
 
     const result = await response.json();
-
   } catch (error) {
     handleFetchError(error, mensagemStatus, "alteração de status");
   }
@@ -372,5 +371,5 @@ if (depositButton) {
   console.error("Botão de depósito não encontrado no DOM.");
 }
 
-// Carrega a pessoa aleatória quando o script é executado 
+// Carrega a pessoa aleatória quando o script é executado
 carregarPessoaAleatoria();
