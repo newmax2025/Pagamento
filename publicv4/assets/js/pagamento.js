@@ -18,10 +18,6 @@ const loggedInUserP = document.getElementById("loggedInUser");
 let pessoaSelecionada = {};
 let currentUser = null;
 
-// Pega o ID do vendedor da URL
-const urlParams = new URLSearchParams(window.location.search);
-const vendedorId = urlParams.get("vendedor"); // Ex: "123"
-
 
 // -----------------------------------------------------------------------------
 const sistemaBot = "111|q0RlLPmqPjbNaEbRJTCXOTUPHCV4ypldrto2SOsIba267955";
