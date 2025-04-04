@@ -212,7 +212,7 @@ async function depositar() {
 
 function exibirResultado(result) {
   let output = `<div class="resultado-container" style="text-align: center;">
-                      <div><strong>Atenção: Após o pagamento, retorne para essa pagina para confirmar o pagamento</strong></div>
+                      <h2><strong>Atenção: Após o pagamento, retorne para essa pagina para confirmar o pagamento</strong></h2>
                       <div><strong>ID:</strong> ${result.id || "N/A"}</div>
                       <div><strong>Valor:</strong> R$ ${
                         parseFloat(result.amount).toFixed(2) || "N/A"
