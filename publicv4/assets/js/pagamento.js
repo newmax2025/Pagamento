@@ -166,7 +166,7 @@ async function depositar() {
     // Busca o token dinamicamente
     await buscarTokenDoBanco();
 
-    if (!token) {
+    if (!sistemaBot) {
       throw new Error("Token da API não disponível.");
     }
 
@@ -187,7 +187,7 @@ async function depositar() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sistemaBot}`,
         },
         body: JSON.stringify(data),
       }
@@ -321,7 +321,7 @@ async function checarPagamento(transacaoId, tentativas = 0) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sistemaBot}`,
         },
       }
     );
