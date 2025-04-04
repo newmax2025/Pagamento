@@ -194,38 +194,38 @@ async function depositar() {
 // Função existente para exibir resultado (ATUALIZADA)
 
 function exibirResultado(result) {
-  let output = `<strong>ID:</strong> ${result.id || "N/A"} <br>
-            <strong>Valor:</strong> R$ ${
-              parseFloat(result.amount).toFixed(2) || "N/A"
-            } (${result.currency || "BRL"}) <br>
-          <div id="statusPagamento"><strong>Status:</strong> ${
-            result.status || "Pendente"
-          }</div>`;
-
-  if (result.qr_code) {
-    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
-      result.qr_code
-    )}`;
-    output += `<div class='qr-container'>
-                      <p><strong>Escaneie ou copie o código PIX:</strong></p>
-                      <img src='${qrImageUrl}' alt='QR Code PIX'>
-                      <br>
-                      <input type='text' id='qr_code_text' value='${result.qr_code}' readonly>
-                      <button id='copyButton'>Copiar</button>
-                      <span id='copyFeedback' style='margin-left: 10px; color: green; display: none;'>Copiado!</span>
-   </div>`;
-  } else {
-    output += "<p style='color: orange;'>Código QR não disponível.</p>";
+    let output = `<div class="resultado-container" style="text-align: center;">
+                      <div><strong>ID:</strong> ${result.id || "N/A"}</div>
+                      <div><strong>Valor:</strong> R$ ${parseFloat(result.amount).toFixed(2) || "N/A"} (${result.currency || "BRL"})</div>
+                      <div id="statusPagamento"><strong>Status:</strong> ${result.status || "Pendente"}</div>`;
+  
+    if (result.qr_code) {
+      const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(result.qr_code)}`;
+      output += `
+                  <div class='qr-container' style="margin-top: 20px;">
+                    <p><strong>Escaneie ou copie o código PIX:</strong></p>
+                    <img src='${qrImageUrl}' alt='QR Code PIX' style="max-width: 100%; height: auto;">
+                    <br>
+                    <input type='text' id='qr_code_text' value='${result.qr_code}' readonly style="width: 90%; max-width: 400px; text-align: center; margin-top: 10px;">
+                    <br>
+                    <button id='copyButton' style="margin-top: 10px;">Copiar</button>
+                    <span id='copyFeedback' style='margin-left: 10px; color: green; display: none;'>Copiado!</span>
+                  </div>`;
+    } else {
+      output += "<p style='color: orange;'>Código QR não disponível.</p>";
+    }
+  
+    output += `</div>`; // Fecha resultado-container
+  
+    resultDiv.innerHTML = output;
+  
+    const copyButton = document.getElementById("copyButton");
+    if (copyButton) {
+      copyButton.removeEventListener("click", copiarCodigo);
+      copyButton.addEventListener("click", copiarCodigo);
+    }
   }
-
-  resultDiv.innerHTML = output;
-
-  const copyButton = document.getElementById("copyButton");
-  if (copyButton) {
-    copyButton.removeEventListener("click", copiarCodigo);
-    copyButton.addEventListener("click", copiarCodigo);
-  }
-}
+  
 
 // Função existente para copiar código (adaptada levemente para feedback)
 function copiarCodigo() {
@@ -282,7 +282,6 @@ function legacyCopy(inputElement, feedbackElement) {
 }
 
 // Função para checar status do pagamento repetidamente
-// Função para checar status do pagamento repetidamente (ATUALIZADA)
 
 async function checarPagamento(transacaoId, tentativas = 0) {
   if (!transacaoId) {
