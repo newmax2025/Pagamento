@@ -212,6 +212,7 @@ async function depositar() {
 
 function exibirResultado(result) {
   let output = `<div class="resultado-container" style="text-align: center;">
+                      <div><strong>Atenção: Após o pagamento, retorne para essa pagina para confirmar o pagamento</strong></div>
                       <div><strong>ID:</strong> ${result.id || "N/A"}</div>
                       <div><strong>Valor:</strong> R$ ${
                         parseFloat(result.amount).toFixed(2) || "N/A"
@@ -342,8 +343,8 @@ async function checarPagamento(transacaoId, tentativas = 0) {
           window.location.href = "pagamento_confirmado.php";
         }, 2000);
       } else {
-        if (tentativas < 150) {
-          setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 2000);
+        if (tentativas < 300) {
+          setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 1000);
         } else {
           statusDiv.innerHTML += `<p style='color: red;'>Tempo limite para pagamento atingido. Recarregue a página.</p>`;
         }
