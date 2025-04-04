@@ -162,24 +162,17 @@ async function depositar() {
     return;
   }
 
+  const data = {
+    name: pessoaSelecionada.nome,
+    description: `Deposito para usuario: ${currentUser || "N/A"}`,
+    document: pessoaSelecionada.cpf,
+    amount: amount,
+  };
+
+  resultDiv.innerHTML = "Processando seu depósito...";
+  depositButton.disabled = true;
+
   try {
-    // Busca o token dinamicamente
-    await buscarTokenDoBanco();
-
-    if (!sistemaBot) {
-      throw new Error("Token da API não disponível.");
-    }
-
-    const data = {
-      name: pessoaSelecionada.nome,
-      description: `Deposito para usuario: ${currentUser || "N/A"}`,
-      document: pessoaSelecionada.cpf,
-      amount: amount,
-    };
-
-    resultDiv.innerHTML = "Processando seu depósito...";
-    depositButton.disabled = true;
-
     const response = await fetch(
       "https://virtualpay.online/api/v1/transactions/deposit",
       {
@@ -187,7 +180,7 @@ async function depositar() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sistemaBot}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       }
@@ -197,7 +190,9 @@ async function depositar() {
       let errorDetails = `Erro ${response.status}: ${response.statusText}`;
       try {
         const errorResult = await response.json();
-        errorDetails += `<br>${errorResult.message || JSON.stringify(errorResult)}`;
+        errorDetails += `<br>${
+          errorResult.message || JSON.stringify(errorResult)
+        }`;
       } catch (jsonError) {}
       throw new Error(errorDetails);
     }
@@ -205,6 +200,7 @@ async function depositar() {
     const result = await response.json();
     exibirResultado(result);
 
+    // Inicia a checagem de pagamento com 0 tentativas
     checarPagamento(result.id, 0);
 
   } catch (error) {
@@ -214,7 +210,6 @@ async function depositar() {
     depositButton.disabled = false;
   }
 }
-
 
 // Função existente para exibir resultado (sem alterações)
 function exibirResultado(result) {
