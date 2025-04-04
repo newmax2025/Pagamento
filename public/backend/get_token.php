@@ -4,7 +4,7 @@ require_once 'config.php';
 header('Content-Type: application/json');
 
 try {
-    $stmt = $conexao->prepare("SELECT valor FROM config WHERE chave_bank = 'token'");
+    $stmt = $conexao->prepare("SELECT valor FROM config WHERE chave = 'chave_bank'");
     $stmt->execute();
     $stmt->bind_result($token);
     $stmt->fetch();
