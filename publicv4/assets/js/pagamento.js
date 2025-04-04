@@ -51,7 +51,7 @@ async function handleRegistration(event) {
   const dataToSend = {
     username: username,
     password: password,
-    vendedorId: vendedorId, // ID do vendedor da URL
+    vendedor_id: vendedorId // ID do vendedor da URL
   };
 
   try {
