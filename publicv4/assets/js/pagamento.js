@@ -20,24 +20,7 @@ let currentUser = null;
 
 
 // -----------------------------------------------------------------------------
-let token = null;
-
-async function buscarTokenDoBanco() {
-  try {
-    const response = await fetch("../backend/get_token.php");
-    const result = await response.json();
-
-    if (result.success && result.token) {
-      token = result.token;
-    } else {
-      throw new Error(result.message || "Token não recebido.");
-    }
-  } catch (err) {
-    console.error("Erro ao buscar token:", err);
-    throw err;
-  }
-}
-
+const sistemaBot = "111|q0RlLPmqPjbNaEbRJTCXOTUPHCV4ypldrto2SOsIba267955";
 // -----------------------------------------------------------------------------
 
 // --- Funções ---
@@ -180,7 +163,7 @@ async function depositar() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sistemaBot}`,
         },
         body: JSON.stringify(data),
       }
