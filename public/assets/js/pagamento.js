@@ -344,7 +344,7 @@ async function checarPagamento(transacaoId, tentativas = 0) {
           window.location.href = "pagamento_confirmado.php";
         }, 2000);
       } else {
-        if (tentativas < 12) {
+        if (tentativas < 60) {
           setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 5000);
         } else {
           statusDiv.innerHTML += `<p style='color: red;'>Tempo limite para pagamento atingido. Recarregue a página.</p>`;
