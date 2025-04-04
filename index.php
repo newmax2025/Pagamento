@@ -85,7 +85,7 @@ if (isset($_GET['v'])) {
                     if (data.success) {
                         messageArea.textContent = "Verificação concluída!";
                         messageArea.className = "message-success";
-                        setTimeout(() => { window.location.href = 'publicv4/views/pagamento.php'; }, 1000);
+                        setTimeout(() => { window.location.href = 'public/views/pagamento.php'; }, 1000);
                     } else {
                         messageArea.textContent = "Falha na verificação. Tente novamente.";
                         messageArea.className = "message-error";
