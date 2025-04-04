@@ -58,7 +58,6 @@ session_start();
 
     <script>
         const vendedorId = <?= json_encode($_SESSION['vendedor_id'] ?? null); ?>;
-        console.log("ID do vendedor:", vendedorId);
     </script>
 
     <script src="../assets/js/pagamento.js?v=<?php echo md5_file('../assets/js/pagamento.js'); ?>"></script> 
