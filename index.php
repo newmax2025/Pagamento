@@ -27,34 +27,7 @@ if (isset($_GET['v'])) {
     <div id="messageArea" aria-live="polite"></div>
 
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <script>
-        function onCaptchaSuccess(token) {
-            const messageArea = document.getElementById('messageArea');
-            messageArea.textContent = "Verificando...";
-            messageArea.className = "message-loading";
-
-            fetch('public/backend/verificar_turnstile.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ token })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        messageArea.textContent = "Verificação concluída!";
-                        messageArea.className = "message-success";
-                        setTimeout(() => { window.location.href = 'public/views/pagamento.php'; }, 1000);
-                    } else {
-                        messageArea.textContent = "Falha na verificação. Tente novamente.";
-                        messageArea.className = "message-error";
-                    }
-                })
-                .catch(() => {
-                    messageArea.textContent = "Erro ao validar. Tente novamente.";
-                    messageArea.className = "message-error";
-                });
-        }
-    </script>
+    <script src="public/assets/js/pagamento.js?v=<?php echo md5_file('public/assets/js/pagamento.js'); ?>"></script>
 
 
 </body>
