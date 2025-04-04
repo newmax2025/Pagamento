@@ -195,40 +195,36 @@ async function depositar() {
 }
 
 // Função existente para exibir resultado (sem alterações)
+// Função existente para exibir resultado (ATUALIZADA)
+
 function exibirResultado(result) {
-
-  let output = `<strong>ID:</strong> ${result.id || "N/A"} <br>
-                  <strong>Valor:</strong> R$ ${
-                    parseFloat(result.amount).toFixed(2) || "N/A"
-                  } (${result.currency || "BRL"}) <br>
-                  <strong>Status:</strong> ${result.status || "Pendente"} <br>`;
-
-  if (result.qr_code) {
-    // Usa um serviço externo para gerar o QR Code
-    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
-      result.qr_code
-    )}`;
-    output += `<div class='qr-container'>
-                       <p><strong>Escaneie ou copie o código PIX:</strong></p>
-                       <img src='${qrImageUrl}' alt='QR Code PIX'>
-                       <br>
-                       <input type='text' id='qr_code_text' value='${result.qr_code}' readonly>
-                       <button id='copyButton'>Copiar</button>
-                       <span id='copyFeedback' style='margin-left: 10px; color: green; display: none;'>Copiado!</span>
-                   </div>`;
-  } else {
-    output += "<p style='color: orange;'>Código QR não disponível.</p>";
+    let output = `<strong>ID:</strong> ${result.id || "N/A"} <br>
+                 <strong>Valor:</strong> R$ ${parseFloat(result.amount).toFixed(2) || "N/A"} (${result.currency || "BRL"}) <br>
+                 <div id="statusPagamento"><strong>Status:</strong> ${result.status || "Pendente"}</div>`;
+  
+    if (result.qr_code) {
+      const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(result.qr_code)}`;
+      output += `<div class='qr-container'>
+                      <p><strong>Escaneie ou copie o código PIX:</strong></p>
+                      <img src='${qrImageUrl}' alt='QR Code PIX'>
+                      <br>
+                      <input type='text' id='qr_code_text' value='${result.qr_code}' readonly>
+                      <button id='copyButton'>Copiar</button>
+                      <span id='copyFeedback' style='margin-left: 10px; color: green; display: none;'>Copiado!</span>
+                  </div>`;
+    } else {
+      output += "<p style='color: orange;'>Código QR não disponível.</p>";
+    }
+  
+    resultDiv.innerHTML = output;
+  
+    const copyButton = document.getElementById("copyButton");
+    if (copyButton) {
+      copyButton.removeEventListener("click", copiarCodigo);
+      copyButton.addEventListener("click", copiarCodigo);
+    }
   }
-  resultDiv.innerHTML = output; // Insere o HTML construído na div
-
-  // Adiciona o listener para o botão copiar APÓS ele ser adicionado ao DOM
-  const copyButton = document.getElementById("copyButton");
-  if (copyButton) {
-    // Remove listener antigo se existir (caso deposite várias vezes)
-    copyButton.removeEventListener("click", copiarCodigo);
-    copyButton.addEventListener("click", copiarCodigo);
-  }
-}
+  
 
 // Função existente para copiar código (adaptada levemente para feedback)
 function copiarCodigo() {
@@ -285,61 +281,60 @@ function legacyCopy(inputElement, feedbackElement) {
 }
 
 // Função para checar status do pagamento repetidamente
+// Função para checar status do pagamento repetidamente (ATUALIZADA)
+
 async function checarPagamento(transacaoId, tentativas = 0) {
-  if (!transacaoId) {
-    console.error("ID da transação é inválido.");
-    return;
+    if (!transacaoId) {
+      console.error("ID da transação é inválido.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(
+        `https://virtualpay.online/api/v1/transactions/${transacaoId}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sistemaBot}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      }
+  
+      const result = await response.json();
+  
+      const statusDiv = document.getElementById("statusPagamento");
+  
+      if (statusDiv && result.status) {
+        statusDiv.innerHTML = `<strong>Status do Pagamento:</strong> ${result.status}`;
+  
+        if (result.status.toLowerCase() === "paid") {
+          statusDiv.innerHTML += `<p style='color: green;'><strong>Pagamento confirmado!</strong></p>`;
+          setTimeout(() => {
+            statusForm();
+            window.location.href = "pagamento_confirmado.php";
+          }, 2000);
+        } else {
+          if (tentativas < 12) {
+            setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 5000);
+          } else {
+            statusDiv.innerHTML += `<p style='color: red;'>Tempo limite para pagamento atingido. Recarregue a página.</p>`;
+          }
+        }
+      } else {
+        resultDiv.innerHTML += `<p style='color: red;'>Erro ao buscar status do pagamento.</p>`;
+      }
+    } catch (error) {
+      console.error("Erro ao verificar pagamento:", error);
+      resultDiv.innerHTML += `<p style='color: red;'>Erro ao verificar pagamento: ${error.message}</p>`;
+    }
   }
-
-  try {
-    const response = await fetch(
-      `https://virtualpay.online/api/v1/transactions/${transacaoId}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sistemaBot}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Erro ${response.status}: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-
-    // Atualiza o status na interface
-    if (result.status) {
-      resultDiv.innerHTML = `<p><strong>Status do Pagamento:</strong> ${result.status}</p>`;
-
-      // Se o pagamento for confirmado, redireciona para a página de sucesso
-      if (result.status.toLowerCase() === "paid") {
-        resultDiv.innerHTML += `<p style='color: green;'><strong>Pagamento confirmado!</strong></p>`;
-
-        // Aguarda 2 segundos antes de redirecionar
-        setTimeout(() => {
-          statusForm(); // Atualiza o status do usuário
-          window.location.href = "pagamento_confirmado.php";
-        }, 2000);
-        
-      } else {
-        // Se ainda não foi pago, tenta novamente em 5 segundos (até 12 vezes = 1 minuto)
-        if (tentativas < 12) {
-          setTimeout(() => checarPagamento(transacaoId, tentativas + 1), 5000);
-        } else {
-          resultDiv.innerHTML += `<p style='color: red;'>Tempo limite para pagamento atingido. Recarregue a página.</p>`;
-        }
-      }
-    } else {
-      resultDiv.innerHTML = `<p style='color: red;'>Erro ao buscar status do pagamento.</p>`;
-    }
-  } catch (error) {
-    console.error("Erro ao verificar pagamento:", error);
-    resultDiv.innerHTML = `<p style='color: red;'>Erro ao verificar pagamento: ${error.message}</p>`;
-  }
-}
+  
 
 // Alterar Status do Usuário
 async function statusForm(){
