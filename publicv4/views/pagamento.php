@@ -44,7 +44,7 @@ session_start();
                 <option value="120">Plano Simples: R$120,00</option>
                 <option value="200">Plano Básico: R$200,00</option>
                 <option value="300">Plano Premium: R$300,00</option>
-                <option value="2520">Plano Premium: R$2.520,00</option>
+                <option value="2520">Plano Premium Anual: R$2.520,00</option>
             </select>
         </label>
         <button id="depositButton">Assinar PLano</button>

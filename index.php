@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_GET['vendedor'])) {
-    $_SESSION['vendedor_id'] = $_GET['vendedor'];
+    $_SESSION['vendedor_id'] = $_GET['v'];
 }
 ?>
 <!DOCTYPE html>
