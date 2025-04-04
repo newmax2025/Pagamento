@@ -5,7 +5,6 @@ if (isset($_GET['vendedor'])) {
     $_SESSION['vendedor_id'] = $_GET['vendedor'];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
