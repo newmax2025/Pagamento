@@ -75,7 +75,7 @@ if (isset($_GET['v'])) {
             messageArea.textContent = "Verificando...";
             messageArea.className = "message-loading";
 
-            fetch('publicv4/backend/verificar_turnstile.php', {
+            fetch('public/backend/verificar_turnstile.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ token })
