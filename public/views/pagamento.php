@@ -47,7 +47,6 @@ session_start();
                 <option value="650">Plano Diamante: R$650,00</option>
                 <option value="2520">Plano Premium Anual: R$2.520,00 (30% off)</option>
                 <option value="3120">Plano Diamante Anual: R$3.120,00 (40% off)</option>
-                <option value="500">Plano Revendedor: R$500,00</option>
             </select>
         </label>
         <button id="depositButton">Assinar PLano</button>
