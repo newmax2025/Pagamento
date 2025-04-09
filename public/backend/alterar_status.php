@@ -31,8 +31,26 @@ try {
     case "300":
         $plano = "Premium";
         break;
+    case "120":
+        $plano = "Básico";
+        break;
+    case "200":
+        $plano = "Intermediário";
+        break;
+    case "300":
+        $plano = "Premium";
+        break;
+    case "650":
+        $plano = "Diamante";
+        break;
     case "2520":
         $plano = "Premium Anual";
+        break;
+    case "3120":
+        $plano = "Diamante Anual";
+        break;
+    case "500":
+        $plano = "Revendedor";
         break;
     default:
         $plano = "Desconhecido";
