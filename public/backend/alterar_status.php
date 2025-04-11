@@ -23,19 +23,10 @@ try {
     $amount = $data["amount"] ?? null;
     switch ((int)$amount) {
     case "120":
-        $plano = "Básico";
+        $plano = "Simples ";
         break;
     case "200":
-        $plano = "Intermediário";
-        break;
-    case "300":
-        $plano = "Premium";
-        break;
-    case "120":
         $plano = "Básico";
-        break;
-    case "200":
-        $plano = "Intermediário";
         break;
     case "300":
         $plano = "Premium";
